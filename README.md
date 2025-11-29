@@ -6,33 +6,39 @@ A concise and reproducible guide for deploying an authoritative DNS pair using N
 
 ## *0. Network Topology*
 
-                     Public Internet
-                           │
-                  (Authoritative DNS Service)
-                           │
-           ┌───────────────┴───────────────┐
-           │     TCP/UDP 53 (DNS Queries)  │
-           └───────────────┬───────────────┘
-                           │
-        ┌──────────────────┴──────────────────┐
-        │                                     │
-┌───────┴────────────┐        ┌───────────────┴────────────┐
-│  NSD Secondary     │        │  NSD Secondary            │
-│  (ns1.example.com) │        │  (ns2.example.com)        │
-│  IP: 1.23.45.11    │◀──────▶│  IP: 1.23.45.12           │
-│  NOTIFY + XFR      │  TSIG  │  XFR (inbound)            │
-└───────▲────────────┘ signed  └───────────────▲────────────┘
-        │                                     │
-        │     allow-notify / request-xfr       │
-        └────────────────────┬─────────────────┘
-                             │ (not public)
-                  ┌──────────┴──────────┐
-                  │ Hidden Primary      │
-                  │ (master server)     │
-                  │ Holds source zones  │
-                  │ IP: 1.23.45.10      │
-                  └─────────────────────┘
-
+```text
+                    Public Internet
+                              │
+                              ▼
+              ┌───────────────────────────────┐
+              │    Authoritative DNS Flow     │
+              │   TCP/UDP 53 (DNS Queries)    │
+              └───────────────┬───────────────┘
+                              │
+            ┌─────────────────┴─────────────────┐
+            │                                   │
+            ▼                                   ▼
+ ┌────────────────────┐               ┌────────────────────┐
+ │    NSD Primary     │               │   NSD Secondary    │
+ │ (ns1.example.com)  │               │ (ns2.example.com)  │
+ │   IP: 1.23.45.11   │◀─────────────▶│   IP: 1.23.45.12   │
+ │    (Public Face)   │  TSIG Signed  │    (Public Face)   │
+ └──────────▲─────────┘               └─────────▲──────────┘
+            │                                   │
+            │          Zone Transfer            │
+            │   (AXFR/IXFR + NOTIFY + TSIG)     │
+            │                                   │
+            └─────────────────┬─────────────────┘
+                              │
+                              │ (Private Link / ACL)
+                              │
+                   ┌──────────┴──────────┐
+                   │    Hidden Primary   │
+                   │   (Master Server)   │
+                   │  Holds Source Zones │
+                   │   IP: 1.23.45.10    │
+                   └─────────────────────┘
+```
 
 ---
 
