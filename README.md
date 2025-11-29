@@ -281,9 +281,10 @@ sudo tail -n 100 -f /var/log/nsd.log
 ## *11. Hidden Primary Concept (Optional Architecture)*
 ```text
 A hidden primary:
-```
+
 1 stores the editable zone files
 2 transfers updates to secondaries via TSIG-signed NOTIFY + XFR
 3 is not listed in public NS delegation
 4 This reduces reconnaissance exposure but does not replace standard security hardening.
+```
 
