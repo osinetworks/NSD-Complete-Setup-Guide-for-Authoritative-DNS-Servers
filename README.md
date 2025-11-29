@@ -6,29 +6,33 @@ A concise and reproducible guide for deploying an authoritative DNS pair using N
 
 ## *0. Network Topology*
 
-                 Public Internet
-                       │
-                (Authoritative DNS)
-                       │
-       ┌───────────────┴───────────────┐
-       │ TCP/UDP 53 (DNS queries)      │
-┌────────┴────────┐ 				┌────────┴──────────┐
-│ NSD Secondary │ │ 				│	NSD Secondary 	│
-│ (ns1 example) │ │ 				│	(ns2 example) 	│
-│ 1.23.45.11 	│	◀───────────▶	│ 1.23.45.12 		│
-│ NOTIFY + XFR 	│ 	TSIG signed 	│ XFR inbound		│
-└────────▲────────┘ └────────▲──────────────────────────┘
-│ 														│	 
-│ 			request-xfr / allow-notify					│
-└─────────────────┐┌────────────────────────────────────┘
-│														│
-│ 			(optional, not public)						│
-┌───────────┴───────────┐┌──────────────────────────────┘
-│ 														│
-│			Hidden Primary (master)						│
-│ 			Holds source zones 							│
-│ 			1.23.45.10 (example) 						│
-└───────────────────────┘└──────────────────────────────┘
+                     Public Internet
+                           │
+                  (Authoritative DNS Service)
+                           │
+           ┌───────────────┴───────────────┐
+           │     TCP/UDP 53 (DNS Queries)  │
+           └───────────────┬───────────────┘
+                           │
+        ┌──────────────────┴──────────────────┐
+        │                                     │
+┌───────┴────────────┐        ┌───────────────┴────────────┐
+│  NSD Secondary     │        │  NSD Secondary            │
+│  (ns1.example.com) │        │  (ns2.example.com)        │
+│  IP: 1.23.45.11    │◀──────▶│  IP: 1.23.45.12           │
+│  NOTIFY + XFR      │  TSIG  │  XFR (inbound)            │
+└───────▲────────────┘ signed  └───────────────▲────────────┘
+        │                                     │
+        │     allow-notify / request-xfr       │
+        └────────────────────┬─────────────────┘
+                             │ (not public)
+                  ┌──────────┴──────────┐
+                  │ Hidden Primary      │
+                  │ (master server)     │
+                  │ Holds source zones  │
+                  │ IP: 1.23.45.10      │
+                  └─────────────────────┘
+
 
 ---
 
