@@ -44,7 +44,9 @@ A concise and reproducible guide for deploying an authoritative DNS pair using N
 
 ## *1. Systemd Service Configuration (Both Servers)*
 
+```text
 Allow NSD to write logs when using a dedicated log file.
+```
 
 ```bash
 sudo cat > /lib/systemd/system/nsd.service << 'EOF'
@@ -202,7 +204,10 @@ sudo nsd-control-setup
 ```
 
 ## *7. Generate New TSIG Secret (Optional but recommended). Use same key for both servers.*
+```text
 If you want to create a fresh TSIG key:
+```
+
 ```bash
 dd if=/dev/random bs=32 count=1 2>/dev/null | base64
 ```
@@ -239,7 +244,9 @@ sudo chown -R nsd:nsd /etc/nsd/zones
 ```
 
 ## *9. Sample Reverse Zone*
+```text
 Use reverse DNS zones only if delegated to you.
+```
 
 ```bash
 sudo cat > /etc/nsd/zones/45.23.1.in-addr.arpa.zone << 'EOF'
@@ -272,7 +279,9 @@ sudo tail -n 100 -f /var/log/nsd.log
 ```
 
 ## *11. Hidden Primary Concept (Optional Architecture)*
+```text
 A hidden primary:
+```
 1 stores the editable zone files
 2 transfers updates to secondaries via TSIG-signed NOTIFY + XFR
 3 is not listed in public NS delegation
