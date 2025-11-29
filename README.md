@@ -40,28 +40,6 @@ A concise and reproducible guide for deploying an authoritative DNS pair using N
                    └─────────────────────┘
 ```
 
-graph TD
-    Internet((Public Internet)) -->|DNS Queries| LB[TCP/UDP 53 Inbound]
-    
-    subgraph Public_Nameservers [Public Authoritative Layer]
-        NS1[NSD Primary<br>ns1.example.com<br>1.23.45.11]
-        NS2[NSD Secondary<br>ns2.example.com<br>1.23.45.12]
-    end
-
-    subgraph Private_Layer [Private Management Layer]
-        Hidden[Hidden Primary<br>Master Server<br>1.23.45.10]
-    end
-
-    LB --> NS1
-    LB --> NS2
-    NS1 <-->|TSIG Signed| NS2
-    Hidden -->|NOTIFY + AXFR/IXFR| NS1
-    Hidden -->|NOTIFY + AXFR/IXFR| NS2
-    
-    %% Styling
-    style Hidden fill:#f9f,stroke:#333,stroke-width:2px
-    style Public_Nameservers fill:#e1f5fe,stroke:#333
-
 ---
 
 ## *1. Systemd Service Configuration (Both Servers)*
